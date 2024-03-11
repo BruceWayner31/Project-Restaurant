@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ресторант Фантазия</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/gallery.css">
+    <link rel="icon" href="img/logo_Hqn_icon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
+</head>
+<body>
+    
+<nav>
+    <button class="hamburger" id="hamburger">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </button>
+    <ul id="navbar" class="hidden">
+        <li><a href="index.html#home">Начало</a></li>
+        <li><a href="about.html#about">За нас</a></li>
+        <li><a href="menu.html#menu">Меню</a></li>
+        <li><a href="reservations.html#reservations">Резервации</a></li>
+        <li><a href="gallery.html#gallery">Галерия</a></li>
+        <li><a href="contact.html#contact">Контакти</a></li>
+        
+      <li id="logoutNav"><a>Изход</a></li>
+    </ul>
+
+
+
+<div class="login-icon">
+  <a id="loginNav" href="signin.html" id="login-link">
+    <i class="fa-solid fa-user fa-2xl" style="color: #FFD43B;"></i>
+  </a>
+</div>
+</nav>
+<div id="izhod">
+
+  <p>Успешно излезнахте!<p>
+</div>
+<div class="da">
+<h2>Ресторант Фантазия</h1>
+</div>
+    <div class="mbt">
+        <img src="img/photo1.jpeg" alt="Herd of horses">
+        <img src="img/photo2.jpg" alt="Herd of horses">
+        <img src="img/photo3.jpg" alt="Herd of horses">
+        <img src="img/photo11.jpg" alt="Herd of horses">
+        <img src="img/photo9.jpg" alt="Herd of horses">
+        <img src="img/photo10.jpg" alt="Herd of horses">
+        <img src="img/photo5.jpg" alt="Herd of horses">
+        <img src="img/photo6.jpg" alt="Herd of horses">
+        <img src="img/photo7.jpg" alt="Herd of horses">
+        <img src="img/photo8.jpg" alt="Herd of horses">
+
+
+
+    </div>
+
+    <script type="module">
+    
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+     
+        const firebaseConfig = {
+          apiKey: "AIzaSyAcds3T860A9ernbXGSFNtJ4oyILYZXwS8",
+          authDomain: "dimplomen.firebaseapp.com",
+          projectId: "dimplomen",
+          storageBucket: "dimplomen.appspot.com",
+          messagingSenderId: "579019958874",
+          appId: "1:579019958874:web:1871d74da011aec3e44663",
+          measurementId: "G-D094NRY6TJ"
+        };
+    
+      
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth();
+        const database = getDatabase(app);
+        
+        const logoutElement = document.getElementById('logoutNav');
+    
+        
+        logoutElement.addEventListener('click', (e) => {
+        signOut(auth).then(() => {
+        
+          document.querySelector('#izhod').style.display = 'block'
+        setTimeout(function() {
+          localStorage.clear();
+           
+          location.href = './index.html'
+}, 1600);
+        }).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert(errorMessage)
+        });
+      })
+      </script>
+    <script src="js/script.js"></script>
+    <footer>
+      <footer class="footer">
+        <div class="container">
+          <div class="row">
+            <div class="footer-col">
+              <h4>Контакти</h4>
+              <ul>
+                <li><a href="#">Град: София – Овча Купел-2</a></li>
+                <li><a href="#">Адрес: ул. Президент Линкълн № 92</a></li>
+                <li><a href="#">Тел: 0888472466</a></li>
+                <li><a href="#">e-mail: info@fantasiabg.com</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Последни оферти
+              </h4>
+              <ul>
+                <li><a href="#">Гръцко парти с гост Диджей RONNY</a></li>
+                <li><a href="#">Зашеметяваща Сръбска вечерна живо</a></li>
+                <li><a href="#">Балканско парти с невероятните таланти от оркестър “ДЕЖАВЮ”</a></li>
+                <li><a href="#">Ромската Нова година</a></li>
+        
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Работно време</h4>
+              <ul>
+                <li><a href="#">Всеки ден от 10:00 до 23:00 часа</a></li>
+               
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Социални мрежи</h4>
+              <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+  
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+  
+    </footer>
+</body>
+</html>

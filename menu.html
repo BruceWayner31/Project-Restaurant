@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ресторант Фантазия</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tr.css">
+
+  <link rel="stylesheet" href="css/signin.css">
+  <link rel="icon" href="img/logo_Hqn_icon.ico" type="image/x-icon">
+
+  <link rel="stylesheet" href="css/menu.css">
+
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
+</head>
+
+<body>
+  <nav>
+    <button class="hamburger" id="hamburger">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </button>
+    <ul id="navbar" class="hidden">
+      <li><a href="index.html#home">Начало</a></li>
+      <li><a href="about.html#about">За нас</a></li>
+      <li><a href="menu.html#menu">Меню</a></li>
+      <li><a href="reservations.html#reservations">Резервации</a></li>
+      <li><a href="gallery.html#gallery">Галерия</a></li>
+      <li><a href="contact.html#contact">Контакти</a></li>
+      <li id="createNav"><a href="admin.html">Добавяне</a></li>
+
+
+
+      <li id="logoutNav"><a>Изход</a></li>
+    </ul>
+
+    <div class="searchbar-container">
+      <input type="search" id="navbar-search" placeholder="Търсене на продукти"
+        aria-label="Search through site content">
+      <button class="search-button" type="submit" aria-label="Search"><i class="fa fa-search"></i></button>
+    </div>
+    <div class="container">
+      <div class="iii">
+        <div class="shopping">
+          <img src="image/shopping.svg">
+          <span class="quantity">0</span>
+        </div>
+      </div>
+    </div>
+    <div class="login-icon">
+      <a id="loginNav" href="signin.html" id="login-link">
+        <i class="fa-solid fa-user fa-2xl" style="color: #FFD43B;"></i>
+      </a>
+    </div>
+  </nav>
+
+  <div id="izhod">
+    <p>Успешно излезнахте!</p>
+  </div>
+  <div class="da">
+    <h2>Меню</h1>
+    </div>
+   
+  <div class="my-container">
+    <div class="list"></div>
+  </div>
+
+  <div class="card">
+    <h1>Количка</h1>
+    <ul class="listCard"></ul>
+    <div class="Purchase">Поръчай</div>
+    <div class="checkOut">
+      <div>
+        <div class="total">0</div>
+        <span>лв.</span>
+      </div>
+      <div class="closeShopping">Затвори</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfigS = {
+      apiKey: "AIzaSyAcds3T860A9ernbXGSFNtJ4oyILYZXwS8",
+      authDomain: "dimplomen.firebaseapp.com",
+      projectId: "dimplomen",
+      storageBucket: "dimplomen.appspot.com",
+      messagingSenderId: "579019958874",
+      appId: "1:579019958874:web:1871d74da011aec3e44663",
+      measurementId: "G-D094NRY6TJ"
+    };
+    function isNumeric(value) {
+      return /^-?\d+$/.test(value);
+    }
+
+    const appS = initializeApp(firebaseConfigS);
+    const databaseS = getDatabase(appS);
+
+    function fetchProductsAndSortByCategory() {
+      const productsByCategory = {};
+
+      const menuFoodRef = ref(databaseS, 'MenuFood');
+      const container = document.querySelector('.my-container'); 
+
+      get(menuFoodRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((childSnapshot) => {
+            const productData = childSnapshot.val();
+            const category = productData.Category;
+
+            if (!productsByCategory[category]) {
+              productsByCategory[category] = [];
+            }
+
+            productsByCategory[category].push(productData);
+          });
+
+          for (const category in productsByCategory) {
+            if (productsByCategory.hasOwnProperty(category)) {
+              const productsInCategory = productsByCategory[category];
+
+            
+              const categoryRow = document.createElement('div');
+              categoryRow.classList.add('category-row');
+              container.appendChild(categoryRow);
+              const hrElement = document.createElement('hr');
+        categoryRow.appendChild(hrElement);
+            
+              const h2Element = document.createElement('h1');
+              h2Element.textContent = category;
+              categoryRow.appendChild(h2Element);
+          
+             
+              const listContainer = document.createElement('div');
+              listContainer.classList.add('list');
+              categoryRow.appendChild(listContainer);
+
+              productsInCategory.forEach(product => {
+                
+                const listItem = document.createElement('div');
+                listItem.classList.add('item');
+
+             
+                const imgElement = document.createElement('img');
+                imgElement.src = product.Snimka;
+
+                const titleElement = document.createElement('div');
+                titleElement.className = 'title';
+                titleElement.textContent = product.Name;
+
+                const priceElement = document.createElement('div');
+                priceElement.className = 'price';
+                priceElement.textContent = "Цена:" + product.Cena + ' лв.';
+
+                const buttonElement = document.createElement('button');
+                buttonElement.textContent = 'Добави';
+
+                if (localStorage.getItem('admin') == null && localStorage.getItem('user') == null) {
+              buttonElement.addEventListener('click', () => {
+                alert(' Трябва да си влезнеш в профила !');
+
+              })
+            }else {
+              buttonElement.onclick = () => {
+                const cardList = document.querySelector('.listCard')
+
+                var liElementCard = document.createElement('li');
+
+                var divElementCard = document.createElement('div');
+                var imgElementCard = document.createElement('img');
+                imgElementCard.src = product.Snimka;
+
+                divElementCard.appendChild(imgElementCard);
+                liElementCard.appendChild(divElementCard);
+
+                var divElementCardName = document.createElement('div');
+                divElementCardName.textContent = product.Name;
+                liElementCard.appendChild(divElementCardName);
+
+                var divElementCardPrice = document.createElement('div');
+                divElementCardPrice.textContent = product.Cena;
+                liElementCard.appendChild(divElementCardPrice);
+
+                var divElementForQuantity = document.createElement('div');
+
+                var buttonElementRemoveItem = document.createElement('button');
+                buttonElementRemoveItem.textContent = 'X';
+                buttonElementRemoveItem.addEventListener('click', (e) => {
+                  liElementCard.remove();
+                  total.textContent -= Number(divElementForCount.textContent) * Number(product.Cena);
+                  buttonElement.textContent = 'Добави';
+                  buttonElement.disabled = false;
+                  quantity.textContent = Number(quantity.textContent) - 1;
+
+                })
+                buttonElementRemoveItem.style.marginRight = '10px';
+
+                var buttonElementDecrease = document.createElement('button');
+                buttonElementDecrease.textContent = '-';
+                buttonElementDecrease.addEventListener('click', (e) => {
+                  let countOfProduct = Number(divElementForCount.textContent);
+
+                  if (countOfProduct > 1) {
+                    countOfProduct--;
+                    total.textContent = Number(total.textContent) - Number(divElementCardPrice.textContent);
+
+                  }
+                  divElementForCount.textContent = countOfProduct;
+
+
+                })
+
+                var divElementForCount = document.createElement('div');
+                divElementForCount.textContent = 1;
+                divElementForCount.className = 'count';
+                divElementForCount.id = 'countProduct';
+
+
+                total.textContent = Number(total.textContent) + Number(product.Cena);
+                quantity.textContent = Number(quantity.textContent) + 1;
+
+                var buttonElementIncrease = document.createElement('button');
+                buttonElementIncrease.textContent = '+';
+                buttonElementIncrease.addEventListener('click', (e) => {
+                  let countOfProduct = Number(divElementForCount.textContent);
+
+                  console.log(++countOfProduct);
+                  divElementForCount.textContent = countOfProduct;
+                  total.textContent = Number(total.textContent) + Number(divElementCardPrice.textContent);
+                })
+
+                divElementForQuantity.appendChild(buttonElementRemoveItem);
+                divElementForQuantity.appendChild(buttonElementDecrease);
+                divElementForQuantity.appendChild(divElementForCount);
+                divElementForQuantity.appendChild(buttonElementIncrease);
+
+                liElementCard.appendChild(divElementForQuantity);
+
+                cardList.appendChild(liElementCard);
+                buttonElement.textContent = 'Продукта е добавен';
+                buttonElement.disabled = true;
+
+              }
+            }
+                
+                listItem.appendChild(imgElement);
+                listItem.appendChild(titleElement);
+                listItem.appendChild(priceElement);
+                listItem.appendChild(buttonElement);
+
+             
+                listContainer.appendChild(listItem);
+              });
+            }
+          }
+        } else {
+          console.log("No data available");
+        }
+      }).catch((error) => {
+        console.error("Error getting data:", error);
+      });
+    }
+    const purchaseElement = document.querySelector('.Purchase');
+      purchaseElement.addEventListener('click', () => {
+        alert('Успешна поръчка!');
+        location.href = './index.html'
+        const cardList = document.querySelector('.listCard');
+        const lis = cardList.getElementsByTagName('li');
+        const products = [];
+
+
+        for (let i = 0; i < lis.length; i++) {
+          let productName = '';
+          let productCena = '';
+          for (let index = 0; index < lis[i].textContent.length; index++) {
+            const element = lis[i].textContent[index];
+
+            if (isNumeric(element) || element == 'X') {
+              productCena += element;
+            } else if (element !== '-' && element !== '+') {
+              productName += element;
+            }
+
+
+          }
+          console.log(productName);
+          const product = {
+            currentProduct: productName,
+            countProduct: productCena,
+
+          };
+          products.push(product);
+
+        }
+        const newOrderRef = push(ref(databaseS, 'Orders'));
+
+        set(newOrderRef, products)
+          .then(() => {
+            console.log('Products saved to Firebase successfully!');
+
+          })
+          .catch((error) => {
+            console.error('Error saving products:', error);
+          });
+
+      })
+    
+
+
+  
+
+    fetchProductsAndSortByCategory();
+
+
+  </script>
+  <script src="js/menu.js"></script>
+  <script src="js/script.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+
+
+
+
+    function handleSearch() {
+      const searchTerm = document.getElementById('navbar-search').value.trim().toLowerCase();
+      let productFound = false;
+
+
+      const menuFoodRef = ref(databaseS, 'MenuFood');
+
+
+      get(menuFoodRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((childSnapshot) => {
+
+            const productData = childSnapshot.val();
+            const productName = productData.Name.toLowerCase();
+
+
+            if (productName.includes(searchTerm)) {
+
+              window.location.href = './menu.html#' + childSnapshot.key;
+              productFound = true;
+              return;
+
+            }
+          });
+
+
+          if (!productFound) {
+            alert('Продукта не е намерен!');
+          }
+        } else {
+          alert('Продукта  е намерен!');
+        }
+      }).catch((error) => {
+        console.error("Error getting data:", error);
+      });
+    }
+
+
+
+    document.querySelector('.search-button').addEventListener('click', handleSearch);
+  </script>
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcds3T860A9ernbXGSFNtJ4oyILYZXwS8",
+      authDomain: "dimplomen.firebaseapp.com",
+      projectId: "dimplomen",
+      storageBucket: "dimplomen.appspot.com",
+      messagingSenderId: "579019958874",
+      appId: "1:579019958874:web:1871d74da011aec3e44663",
+      measurementId: "G-D094NRY6TJ"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+    const database = getDatabase(app);
+
+    const logoutElement = document.getElementById('logoutNav');
+
+
+    logoutElement.addEventListener('click', (e) => {
+      signOut(auth).then(() => {
+
+        document.querySelector('#izhod').style.display = 'block'
+        setTimeout(function () {
+          localStorage.clear();
+
+          location.href = './index.html'
+        }, 1600);
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(errorMessage)
+      });
+    })
+  </script>
+
+  <script src="script.js"></script>

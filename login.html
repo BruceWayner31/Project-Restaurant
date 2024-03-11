@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ресторант Фантазия</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/tr.css">
+    <link rel="stylesheet" href="css/signin.css">
+    <link rel="icon" href="img/logo_Hqn_icon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
+</head>
+
+<body>
+
+    <nav>
+        <button class="hamburger" id="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </button>
+        <ul id="navbar" class="hidden">
+            <li><a href="index.html#home">Начало</a></li>
+            <li><a href="about.html#about">За нас</a></li>
+            <li><a href="menu.html#menu">Меню</a></li>
+            <li><a href="reservations.html#reservations">Резервации</a></li>
+            <li><a href="gallery.html#gallery">Галерия</a></li>
+            <li><a href="contact.html#contact">Контакти</a></li>
+          
+            <li id="logoutNav"><a>Изход</a></li>
+
+
+        </ul>
+
+       
+
+        <div class="login-icon">
+            <a id="loginNav" href="signin.html" id="login-link">
+              <i class="fa-solid fa-user fa-2xl" style="color: #FFD43B;"></i>
+            </a>
+          </div>
+    </nav>
+
+    <div id="izhod">
+
+        <p>Успешно излезнахте!<p>
+    </div>
+    <div id="notifications">
+
+        <p>Успешно се регистрирахте!<p>
+    </div>
+    <section>
+        <div class="signin"> 
+      
+          <div class="content"> 
+      
+           <h2>Регистрация</h2> 
+      
+           <div class="form"> 
+      
+            <div class="inputBox"> 
+    <label class="dai">Име</label><input id="username" name="username" type="text" placeholder="Username"><br>
+    <label class="dai">Парола</label><input id="password" name="password" type="password" placeholder="Password"><br>
+    <label class="dai">E-mail</label><input id="email" name="email" type="email" placeholder="E-mail"><br>
+    <div class="inputBox" style="padding-top: 2.2em;"> 
+    <input type="submit" id="signUp" name="signup_submit" value="Регистрация"><br>
+    <div class="links"> <div class="op">Ако имате акаунт натиснете тук-> </div> <a href="signin.html">Sign In</a> </div>
+    </div>
+           </div>
+          </div>
+        </div>
+    </section>
+    <script type="module">
+    
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword, signOut} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, set, ref } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+   
+        const firebaseConfig = {
+            apiKey: "AIzaSyAcds3T860A9ernbXGSFNtJ4oyILYZXwS8",
+            authDomain: "dimplomen.firebaseapp.com",
+            projectId: "dimplomen",
+            storageBucket: "dimplomen.appspot.com",
+            messagingSenderId: "579019958874",
+            appId: "1:579019958874:web:1871d74da011aec3e44663",
+            measurementId: "G-D094NRY6TJ"
+        };
+        const logoutElement = document.getElementById('logoutNav');
+     
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth();
+        const database = getDatabase(app);
+        signUp.addEventListener('click', (e) => {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var username = document.getElementById('username').value;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                 
+                    const user = userCredential.user;
+                    set(ref(database, 'users/' + user.uid), {
+                        username: username,
+                        email: email,
+                        password: password
+
+
+                    })
+                    document.querySelector('#notifications').style.display = 'block'
+          setTimeout(function() {
+           
+          location.href = './index.html'
+}, 1500);
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+
+                    alert(errorMessage)
+                    // ..
+                });
+        });
+
+        logoutElement.addEventListener('click', (e) => {
+            signOut(auth).then(() => {
+                
+                document.querySelector('#izhod').style.display = 'block'
+        setTimeout(function() {
+          localStorage.clear();
+           
+          location.href = './index.html'
+}, 1600);
+            }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage)
+            });
+        });
+
+    </script>
+
+
+
+    <script src="js/script.js"></script>
+    
+</body>
+
+</html>

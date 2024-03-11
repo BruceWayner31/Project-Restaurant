@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ресторант Фантазия</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/reserve.css">
+  <link rel="icon" href="img/logo_Hqn_icon.ico" type="image/x-icon">
+
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700,900" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
+</head>
+
+<body>
+
+  <nav>
+    <button class="hamburger" id="hamburger">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </button>
+    <ul id="navbar" class="hidden">
+      <li><a href="index.html#home">Начало</a></li>
+      <li><a href="about.html#about">За нас</a></li>
+      <li><a href="menu.html#menu">Меню</a></li>
+      <li><a href="reservations.html#reservations">Резервации</a></li>
+      <li><a href="gallery.html#gallery">Галерия</a></li>
+      <li><a href="contact.html#contact">Контакти</a></li>
+      <li id="createNav"><a href="adminreservation.html">Покажи резервации</a></li>
+      <li id="logoutNav"><a>Изход</a></li>
+
+    </ul>
+
+
+
+
+    <div class="login-icon">
+      <a id="loginNav" href="signin.html" id="login-link">
+        <i class="fa-solid fa-user fa-2xl" style="color: #FFD43B;"></i>
+      </a>
+    </div>
+  </nav>
+
+  <div id="izhod">
+
+    <p>Успешно излезнахте!<p>
+</div>
+  <div class="wrapperr">
+
+    <div id="notifications">
+
+      <p>Успешно направихте резервация!<p>
+  </div>
+  <div id="wrong">
+  
+    <p>Попълнете всички полета!<p>
+  </div>
+    <div class="containerr">
+      <div class="containerr-time">
+        <h2 class="headding">Работно време</h2>
+        <h3 class="headding-days">Понеделник-Петък</h3>
+        <p>8:00 - 12:00 (закуска)</p>
+        <p>13:00 - 16:00 (обяд)</p>
+        <p>17:00 - 23:00 (вечеря)</p>
+
+
+        <h3 class="headding-days">Събота-Неделя</h3>
+        <p>10:00 - 12:00 (закуска)</p>
+        <p>13:00 - 14:00 (обяд)</p>
+        <p>15:00 - 20:00 (вечеря)</p>
+
+        <hr>
+
+        <h4 class="headding-phone">Тел:089563213</h4>
+      </div>
+
+      <div class="containerr-form">
+        <form action="#">
+          <h2 class="headding heading-yellow">Резервирай онлайн</h2>
+
+          <div class="forrm-field">
+            <p>Име:</p>
+            <input type="text" placeholder="Име" id="dot">
+          </div>
+          <div class="forrm-field">
+            <p>E-mail:</p>
+            <input type="email" placeholder="E-mail" id="dot2">
+          </div>
+          <div class="forrm-field">
+            <p>Дата:</p>
+            <input type="date" id="dot3">
+          </div>
+          <div class="forrm-field">
+            <p>Час:</p>
+            <input type="time" id="dot4">
+          </div>
+          <div class="forrm-field">
+            <p>Брой хора:</p>
+            <select name="select" id="dot5">
+              <option value="1">1 човек</option>
+              <option value="2">2 човека</option>
+              <option value="3">3 човека</option>
+              <option value="4">4 човека</option>
+              <option value="5">5 persons</option>
+              <option value="5+">5+ човека</option>
+            </select>
+          </div>
+
+         
+        </form>
+        <button class="btnn" id="Addbt">Потвърди</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+   
+     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+              import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+              import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+              import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+          
+              const firebaseConfig = {
+                apiKey: "AIzaSyAcds3T860A9ernbXGSFNtJ4oyILYZXwS8",
+                authDomain: "dimplomen.firebaseapp.com",
+                projectId: "dimplomen",
+                storageBucket: "dimplomen.appspot.com",
+                messagingSenderId: "579019958874",
+                appId: "1:579019958874:web:1871d74da011aec3e44663",
+                measurementId: "G-D094NRY6TJ"
+              };
+          
+        
+              const app = initializeApp(firebaseConfig);
+              const analytics = getAnalytics(app);
+              const auth = getAuth();
+              const database = getDatabase(app);
+          
+              let Name = document.getElementById('dot');
+    let Email = document.getElementById('dot2');
+    let Data = document.getElementById('dot3');
+    let Time = document.getElementById('dot4');
+    let People = document.getElementById('dot5');
+
+
+    let Addbtn = document.getElementById('Addbt');
+              function Addt() {
+                set(ref(database, 'Reservations/' + Name.value), {
+                  Name: Name.value,
+        Email: Email.value,
+        Data: String(Data.value),
+        Time: String(Time.value),
+        People: String(People.value)
+                 
+          
+          
+                }).then(() => {
+                  document.querySelector('#notifications').style.display = 'block'
+                  setTimeout(function() {
+      
+       
+      location.href = './index.html'
+}, 1600);
+          
+                }).catch((error) => {
+                  document.querySelector('#wrong').style.display = 'block'
+                });
+          
+          
+              }
+    Addbtn.addEventListener('click', Addt);
+    const logoutElement = document.getElementById('logoutNav');
+
+
+    logoutElement.addEventListener('click', (e) => {
+      signOut(auth).then(() => {
+      
+        document.querySelector('#izhod').style.display = 'block'
+        setTimeout(function() {
+          localStorage.clear();
+           
+          location.href = './index.html'
+}, 1600);
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(errorMessage)
+      });
+    })
+  </script>
+  <script src="js/script.js"></script>
+  <footer>
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="footer-col">
+            <h4>Контакти</h4>
+            <ul>
+              <li><a href="#">Град: София – Овча Купел-2</a></li>
+              <li><a href="#">Адрес: ул. Президент Линкълн № 92</a></li>
+              <li><a href="#">Тел: 0888472466</a></li>
+              <li><a href="#">e-mail: info@fantasiabg.com</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Последни оферти
+            </h4>
+            <ul>
+              <li><a href="#">Гръцко парти с гост Диджей RONNY</a></li>
+              <li><a href="#">Зашеметяваща Сръбска вечерна живо</a></li>
+              <li><a href="#">Балканско парти с невероятните таланти от оркестър “ДЕЖАВЮ”</a></li>
+              <li><a href="#">Ромската Нова година</a></li>
+
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Работно време</h4>
+            <ul>
+              <li><a href="#">Всеки ден от 10:00 до 23:00 часа</a></li>
+
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Социални мрежи</h4>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </footer>
+</body>
+
+</html>

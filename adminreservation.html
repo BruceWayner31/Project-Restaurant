@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ресторант Фантазия</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/gallery.css">
+  <link rel="stylesheet" href="css/table.css">
+  <link rel="icon" href="img/logo_Hqn_icon.ico" type="image/x-icon">
+
+
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+
+  <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
+</head>
+
+<body>
+
+  <nav>
+    <button class="hamburger" id="hamburger">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </button>
+    <ul id="navbar" class="hidden">
+      <li><a href="index.html#home">Начало</a></li>
+      <li><a href="about.html#about">За нас</a></li>
+      <li><a href="menu.html#menu">Меню</a></li>
+      <li><a href="reservations.html#reservations">Резервации</a></li>
+      <li><a href="gallery.html#gallery">Галерия</a></li>
+      <li><a href="contact.html#contact">Контакти</a></li>
+
+      <li id="logoutNav"><a>Изход</a></li>
+    </ul>
+
+  
+
+    <div class="login-icon">
+      <a id="loginNav" href="signin.html" id="login-link">
+        <i class="fa-solid fa-user fa-2xl" style="color: #FFD43B;"></i>
+      </a>
+    </div>
+  </nav>
+  <div id="izhod">
+
+    <p>Успешно излезнахте!
+    <p>
+  </div>
+  <div id="removed">
+
+    <p>Успешно премахнате резервацията!
+    <p>
+  </div>
+  <div id="approve">
+
+    <p>Успешно одобрихте резервацията!
+    <p>
+  </div>
+  <div id="Nodata">
+
+    <p>Няма резервации!
+    <p>
+  </div>
+  <div class="da">
+    <h2>Всички Резервации</h1>
+    </div>
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>Име</th>
+        <th>E-Mail</th>
+        <th>Дата</th>
+        <th>Час</th>
+        <th>Брой хора:</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+
+    </tbody>
+  </table>
+  <script type="module">
+    
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getDatabase, set, ref, update, get, child, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+
+ 
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcds3T860A9ernbXGSFNtJ4oyILYZXwS8",
+      authDomain: "dimplomen.firebaseapp.com",
+      projectId: "dimplomen",
+      storageBucket: "dimplomen.appspot.com",
+      messagingSenderId: "579019958874",
+      appId: "1:579019958874:web:1871d74da011aec3e44663",
+      measurementId: "G-D094NRY6TJ"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+    const db = getDatabase();
+
+   
+    const reservationsRef = ref(db, 'Reservations');
+
+ 
+
+
+function fetchDataAndPopulateTable() {
+  get(reservationsRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const tableBody = document.getElementById("table-body");
+      tableBody.innerHTML = "";
+
+      snapshot.forEach((childSnapshot) => {
+        const reservationKey = childSnapshot.key;
+        const reservation = childSnapshot.val();
+        const { Name, Email, Data, Time, People } = reservation;
+
+    
+        const row = document.createElement("tr");
+        row.setAttribute("data-key", reservationKey);
+
+        const cells = [
+          document.createElement("td"),
+          document.createElement("td"),
+          document.createElement("td"),
+          document.createElement("td"),
+          document.createElement("td"),
+          document.createElement("td")
+        ];
+
+        
+        cells[0].textContent = Name;
+        cells[1].textContent = Email;
+        cells[2].textContent = Data;
+        cells[3].textContent = Time;
+        cells[4].textContent = People;
+        cells[5].innerHTML = `<button data-action="approve">Одобри</button> <button data-action="remove">Изтрии</button>`;
+
+       
+        cells.forEach(cell => row.appendChild(cell));
+
+       
+        tableBody.appendChild(row);
+      });
+    } else {
+      document.querySelector('#Nodata').style.display = 'block'
+          
+    }
+  }).catch((error) => {
+    console.error("Error fetching data: ", error);
+  });
+}
+
+
+document.getElementById("data-table").addEventListener("click", (event) => {
+  const target = event.target;
+  if (target.tagName === "BUTTON") {
+    const action = target.dataset.action;
+    const reservationKey = target.closest("tr").dataset.key;
+    if (action === "approve") {
+      update(ref(db, `Reservations/${reservationKey}`), { Approved: true })
+        .then(() => {
+          document.querySelector('#approve').style.display = 'block'
+          setTimeout(function() {
+           
+          location.href = './index.html'
+}, 1500);
+        })
+        .catch((error) => {
+          console.error("Error approving reservation: ", error);
+        });
+    } else if (action === "remove") {
+      remove(ref(db, `Reservations/${reservationKey}`))
+        .then(() => {
+          fetchDataAndPopulateTable();
+          document.querySelector('#removed').style.display = 'block'
+          setTimeout(function() {
+           
+          location.href = './index.html'
+}, 1500);
+
+        })
+        .catch((error) => {
+          console.error("Error removing reservation: ", error);
+        });
+    }
+  }
+});
+
+
+fetchDataAndPopulateTable();
+    const logoutElement = document.getElementById('logoutNav');
+
+
+    logoutElement.addEventListener('click', (e) => {
+      signOut(auth).then(() => {
+        
+        document.querySelector('#izhod').style.display = 'block'
+        setTimeout(function () {
+          localStorage.clear();
+
+          location.href = './index.html'
+        }, 1600);
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(errorMessage)
+      });
+    })
+    
+
+   
+  </script>
+
+  <script src="js/script.js"></script>
+
+</body>
+
+</html>

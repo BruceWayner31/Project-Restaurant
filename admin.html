@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ресторант Фантазия</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/tr.css">
+  <link rel="stylesheet" href="css/signin.css">
+  <link rel="icon" href="img/logo_Hqn_icon.ico" type="image/x-icon">
+
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
+</head>
+
+<body>
+
+  <nav>
+    <button class="hamburger" id="hamburger">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </button>
+    <ul id="navbar" class="hidden">
+      <li><a href="index.html#home">Начало</a></li>
+      <li><a href="about.html#about">За нас</a></li>
+      <li><a href="menu.html#menu">Меню</a></li>
+      <li><a href="reservations.html#reservations">Резервации</a></li>
+      <li><a href="gallery.html#gallery">Галерия</a></li>
+      <li><a href="contact.html#contact">Контакти</a></li>
+
+      <li id="logoutNav"><a>Изход</a></li>
+
+    </ul>
+
+ 
+
+
+    <div class="login-icon">
+      <a id="loginNav" href="signin.html" id="login-link">
+        <i class="fa-solid fa-user fa-2xl" style="color: #FFD43B;"></i>
+      </a>
+    </div>
+  </nav>
+  <div id="izhod">
+
+    <p>Успешно излезнахте!<p>
+</div>
+<div id="notifications">
+
+  <p>Успешно добавихте продукт!<p>
+</div>
+  <section>
+    <div class="signin">
+
+      <div class="content">
+
+        <h2>Добавяне на храна</h2>
+
+        <div class="form">
+
+          <div class="inputBox">
+            <label class="dai">Номер</label><input id="idd" name="password" type="text" placeholder="Номер"><br>
+
+            <label class="dai">Име</label><input id="email" name="email" type="text" placeholder="Име"><br>
+            <label class="dai">Категория</label><input id="category" name="email" type="text" placeholder="Закуска/Обяд/Вечеря/Десерти"><br>
+
+
+
+            <label class="dai">Цена</label><input id="password" name="password" type="text" placeholder="Цена"><br>
+            <label class="dai">Снимка</label><input id="snimka" name="password" type="text" placeholder="Линк"><br>
+
+
+
+          </div>
+          <div class="inputBox" style="padding-top: 2.2em;">
+            <input type="submit" class="login-btn" id="login" name="login" value="Добави"><br>
+            <script type="module">
+
+              import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+              import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+              import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+              import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+              const firebaseConfig = {
+                apiKey: "AIzaSyAcds3T860A9ernbXGSFNtJ4oyILYZXwS8",
+                authDomain: "dimplomen.firebaseapp.com",
+                projectId: "dimplomen",
+                storageBucket: "dimplomen.appspot.com",
+                messagingSenderId: "579019958874",
+                appId: "1:579019958874:web:1871d74da011aec3e44663",
+                measurementId: "G-D094NRY6TJ"
+              };
+          
+         
+              const app = initializeApp(firebaseConfig);
+              const analytics = getAnalytics(app);
+              const auth = getAuth();
+              const database = getDatabase(app);
+          
+              let Name = document.getElementById('email');
+              let Cena = document.getElementById('password');
+              let Snimka = document.getElementById('snimka');
+              let Id = document.getElementById('idd');
+              let Category = document.getElementById('category');
+
+           
+          
+          
+              let Addbtn = document.getElementById('login');
+              function Addt() {
+                set(ref(database, 'MenuFood/' + Name.value), {
+                  Category: Category.value,
+                  Id: Id.value,
+                  Name: Name.value,
+                  Cena: Cena.value,
+                  Snimka: String(Snimka.value)
+                 
+          
+          
+                }).then(() => {
+                  document.querySelector('#notifications').style.display = 'block'
+                  setTimeout(function() {
+      
+       
+      location.href = './index.html'
+}, 1600);
+          
+                }).catch((error) => {
+                  const errorCode = error.code;
+                  const errorMessage = error.message;
+                  alert(errorMessage)
+                });
+          
+          
+              }
+              const logoutElement = document.getElementById('logoutNav');
+    
+        
+    logoutElement.addEventListener('click', (e) => {
+    signOut(auth).then(() => {
+   
+      document.querySelector('#izhod').style.display = 'block'
+    setTimeout(function() {
+      localStorage.clear();
+       
+      location.href = './index.html'
+}, 1600);
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      alert(errorMessage)
+    });
+  })
+              Addbtn.addEventListener('click', Addt);
+              </script>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+  </section>
+
+
+
+
+
+
+  <script src="js/script.js"></script>
+  <script src="js/menu.js"></script>
+
+
+  <script>
+    const dobaviElement = document.getElementById('login');
+    const imeElement = document.getElementById('email');
+    const cenaElement = document.getElementById('password');
+    const snimkaElement = document.getElementById('snimka');
+
+
+    dobaviElement.addEventListener('click', () => {
+      const newProduct = {
+        id: 10,
+        name: imeElement.value,
+        image: snimkaElement.value,
+        price: cenaElement.value
+      }
+      console.log(newProduct);
+      products.push(newProduct);
+
+    })
+
+  </script>
+
+</body>
+
+</html>
